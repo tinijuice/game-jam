@@ -1,34 +1,7 @@
 [gd_scene format=3 uid="uid://624ouho8f7y2"]
 
 [ext_resource type="Texture2D" uid="uid://cugws5u28cf4p" path="res://assets/sprites/player/Warrior_Blue.png" id="1_1hmtu"]
-
-[sub_resource type="GDScript" id="GDScript_1hmtu"]
-script/source = "extends CharacterBody2D
-
-
-const SPEED = 300.0
-const JUMP_VELOCITY = -400.0
-
-
-func _physics_process(delta: float) -> void:
-	# Add the gravity.
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-
-	# Handle jump.
-	if Input.is_action_just_pressed(\"ui_accept\") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
-
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
-	var direction := Input.get_axis(\"ui_left\", \"ui_right\")
-	if direction:
-		velocity.x = direction * SPEED
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-
-	move_and_slide()
-"
+[ext_resource type="Script" uid="uid://5gkn3qh1j4mm" path="res://scenes/entities/player/player.gd" id="1_635qg"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_635qg"]
 
@@ -45,6 +18,57 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_bjvvg"]
+resource_name = "attack_down"
+length = 0.6
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [24, 25, 26, 27, 28, 29]
+}
+
+[sub_resource type="Animation" id="Animation_nh4ur"]
+resource_name = "attack_right"
+length = 0.6
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [12, 13, 14, 15, 16, 17]
+}
+
+[sub_resource type="Animation" id="Animation_8akj5"]
+resource_name = "attack_up"
+length = 0.6
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [36, 37, 38, 39, 40, 41]
 }
 
 [sub_resource type="Animation" id="Animation_635qg"]
@@ -86,9 +110,46 @@ tracks/0/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_nh4ur"]
 _data = {
 &"RESET": SubResource("Animation_1hmtu"),
+&"attack_down": SubResource("Animation_bjvvg"),
+&"attack_right": SubResource("Animation_nh4ur"),
+&"attack_up": SubResource("Animation_8akj5"),
 &"idle": SubResource("Animation_635qg"),
 &"run": SubResource("Animation_58kc7")
 }
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_58kc7"]
+animation = &"attack_right"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_nh4ur"]
+animation = &"attack_right"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bjvvg"]
+animation = &"attack_up"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8akj5"]
+animation = &"attack_down"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_bj7e2"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_58kc7")
+blend_point_0/pos = Vector2(-1, 0)
+blend_point_1/node = SubResource("AnimationNodeAnimation_nh4ur")
+blend_point_1/pos = Vector2(1, 0)
+blend_point_2/node = SubResource("AnimationNodeAnimation_bjvvg")
+blend_point_2/pos = Vector2(0, -1)
+blend_point_3/node = SubResource("AnimationNodeAnimation_8akj5")
+blend_point_3/pos = Vector2(0, 1)
+blend_mode = 1
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_bj7e2"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_1murt"]
+graph_offset = Vector2(-12, -15)
+nodes/output/position = Vector2(1160, 140)
+nodes/BlendSpace2D/node = SubResource("AnimationNodeBlendSpace2D_bj7e2")
+nodes/BlendSpace2D/position = Vector2(180, 120)
+nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_bj7e2")
+nodes/TimeScale/position = Vector2(700, 140)
+node_connections = [&"output", 0, &"TimeScale", &"TimeScale", 0, &"BlendSpace2D"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1hmtu"]
 animation = &"idle"
@@ -102,16 +163,29 @@ advance_mode = 2
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_nh4ur"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bjvvg"]
+advance_mode = 0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1murt"]
+advance_mode = 0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5sj0x"]
+advance_mode = 0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ovg4i"]
+switch_mode = 2
+advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_8akj5"]
+states/attack/node = SubResource("AnimationNodeBlendTree_1murt")
+states/attack/position = Vector2(565, 242)
 states/idle/node = SubResource("AnimationNodeAnimation_1hmtu")
-states/idle/position = Vector2(341.5, 100.25)
+states/idle/position = Vector2(340.5, 100)
 states/run/node = SubResource("AnimationNodeAnimation_635qg")
 states/run/position = Vector2(502, 50.5)
-transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_58kc7"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_nh4ur"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_bjvvg")]
+transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_58kc7"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_nh4ur"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_bjvvg"), "idle", "attack", SubResource("AnimationNodeStateMachineTransition_1murt"), "run", "attack", SubResource("AnimationNodeStateMachineTransition_5sj0x"), "attack", "idle", SubResource("AnimationNodeStateMachineTransition_ovg4i")]
 
 [node name="Player" type="CharacterBody2D" unique_id=860125335]
-script = SubResource("GDScript_1hmtu")
+script = ExtResource("1_635qg")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1713848258]
 position = Vector2(0, -32)
@@ -128,5 +202,8 @@ shape = SubResource("CircleShape2D_635qg")
 libraries/ = SubResource("AnimationLibrary_nh4ur")
 
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=1631166406]
+active = false
 tree_root = SubResource("AnimationNodeStateMachine_8akj5")
 anim_player = NodePath("../AnimationPlayer")
+parameters/attack/BlendSpace2D/blend_position = Vector2(0, 0)
+parameters/attack/TimeScale/scale = 1.0

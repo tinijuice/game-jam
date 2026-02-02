@@ -1,6 +1,5 @@
 extends CharacterBody2D
 
-
 enum State {
 	IDLE,
 	RUN,
@@ -9,33 +8,50 @@ enum State {
 }
 
 @export_category("Stats")
-@export var speed: float = 400.0
+@export var speed: int = 400
+@export var attack_speed: float = 0.6
+
 
 var state: State = State.IDLE
+var move_direction: Vector2 = Vector2(0, 0)
 
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var animation_playback: AnimationNodeStateMachinePlayback = $AnimationTree["parameters/playback"]
 
 
-func _physics_process(_delta: float) -> void:
-	movement_loop()
+func _ready() -> void:
+	animation_tree.set_active(true)
 
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		attack()
+
+
+func _physics_process(_delta: float) -> void:
+
+	if not state == State.ATTACK:
+		movement_loop()
 
 func movement_loop() -> void:
-	var move_direction = Input.get_vector("left", "right", "up", "down")
-	
-	# DÉBOGAGE - À RETIRER APRÈS
-	print("Direction: ", move_direction)
-	print("Velocity: ", velocity)
-	print("State: ", State.keys()[state])
-	
-	velocity = move_direction * speed
+	move_direction.x = int(Input.is_action_pressed("right")) - int(Input.is_action_pressed("left"))
+	move_direction.y = int(Input.is_action_pressed("down")) - int(Input.is_action_pressed("up"))
+	var motion: Vector2 = move_direction.normalized() * speed
+	set_velocity(motion)
 	move_and_slide()
+
 	
-	var new_state = State.RUN if move_direction != Vector2.ZERO else State.IDLE
-	if new_state != state:
-		state = new_state
-		print("Changement d'état vers: ", State.keys()[state])
+	if state == State.IDLE or state == State.RUN:
+		if move_direction.x < -0.01:
+			$Sprite2D.flip_h = true
+		if move_direction.x > 0.01:
+			$Sprite2D.flip_h = false
+
+	if motion != Vector2.ZERO and state == State.IDLE:
+		state = State.RUN
+		update_animation()
+	elif motion == Vector2.ZERO and state == State.RUN:
+		state = State.IDLE
 		update_animation()
 
 
@@ -47,5 +63,24 @@ func update_animation() -> void:
 			animation_playback.travel("run")
 		State.ATTACK:
 			animation_playback.travel("attack")
-		State.DEAD:
-			animation_playback.travel("dead")
+	
+
+
+func attack() -> void:
+	if state == State.ATTACK:
+		return
+	state = State.ATTACK
+
+	var mouse_pos: Vector2 = get_global_mouse_position()
+	var attack_dir: Vector2 = (mouse_pos - global_position).normalized()
+	$Sprite2D.flip_h = attack_dir.x < 0 and abs(attack_dir.x) >= abs(attack_dir.y)
+	animation_tree.set("parameters/attack/BlendSpace2D/blend_position", attack_dir)
+	update_animation()
+
+	await get_tree().create_timer(attack_speed).timeout
+	
+	if move_direction != Vector2.ZERO:
+		state = State.RUN
+	else:
+		state = State.IDLE
+	update_animation()
