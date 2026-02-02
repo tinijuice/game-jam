@@ -21,7 +21,9 @@ var move_direction: Vector2 = Vector2(0, 0)
 
 
 func _ready() -> void:
+	$HitBox.monitoring == false
 	animation_tree.set_active(true)
+	print("monitoring: ", $HitBox.monitorable)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -29,10 +31,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		attack()
 
 
-func _physics_process(_delta: float) -> void:
+var last_monitoring_state: bool = false
 
+func _physics_process(_delta: float) -> void:
+	# Print seulement quand le monitoring change
+	if $HitBox.monitoring != last_monitoring_state:
+		print("⚡ Monitoring changé: ", $HitBox.monitoring)
+		last_monitoring_state = $HitBox.monitoring
+	
 	if not state == State.ATTACK:
 		movement_loop()
+
 
 func movement_loop() -> void:
 	move_direction.x = int(Input.is_action_pressed("right")) - int(Input.is_action_pressed("left"))
@@ -89,3 +98,4 @@ func attack() -> void:
 
 func _on_hit_box_area_entered(area: Area2D) -> void:
 	area.owner.take_damage(attack_damage)
+	print()
