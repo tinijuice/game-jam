@@ -445,3 +445,6 @@ y_sort_enabled = true
 
 [node name="Enemy" parent="Enemies" unique_id=401506810 instance=ExtResource("15_o5aat")]
 position = Vector2(142, 739)
+
+[node name="Effects" type="Node2D" parent="." unique_id=1442369123]
+unique_name_in_owner = true

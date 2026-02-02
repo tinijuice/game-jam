@@ -89,4 +89,3 @@ func attack() -> void:
 
 func _on_hit_box_area_entered(area: Area2D) -> void:
 	area.owner.take_damage(attack_damage)
-	print("damage :", attack_damage)
