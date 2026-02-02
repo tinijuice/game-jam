@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cg5nvio2eojui" path="res://scenes/entities/enemies/enemy.gd" id="1_essrt"]
 [ext_resource type="Texture2D" uid="uid://vsdewkamqxxs" path="res://assets/sprites/enemies/Warrior_Red.png" id="1_yfmsl"]
+[ext_resource type="PackedScene" uid="uid://xv5pm87t6hru" path="res://scenes/effects/death.tscn" id="2_c8ylr"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_635qg"]
 radius = 23.0
@@ -185,8 +186,13 @@ states/run/node = SubResource("AnimationNodeAnimation_635qg")
 states/run/position = Vector2(502, 50.5)
 transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_58kc7"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_nh4ur"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_bjvvg"), "idle", "attack", SubResource("AnimationNodeStateMachineTransition_1murt"), "run", "attack", SubResource("AnimationNodeStateMachineTransition_5sj0x"), "attack", "idle", SubResource("AnimationNodeStateMachineTransition_ovg4i")]
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_essrt"]
+radius = 23.0
+height = 76.0
+
 [node name="Enemy" type="CharacterBody2D" unique_id=860125335]
 script = ExtResource("1_essrt")
+death_packed = ExtResource("2_c8ylr")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1713848258]
 position = Vector2(0, -32)
@@ -208,3 +214,14 @@ tree_root = SubResource("AnimationNodeStateMachine_8akj5")
 anim_player = NodePath("../AnimationPlayer")
 parameters/attack/BlendSpace2D/blend_position = Vector2(0, 0)
 parameters/attack/TimeScale/scale = 1.0
+
+[node name="HurtBox" type="Area2D" parent="." unique_id=426477563]
+collision_layer = 16
+collision_mask = 0
+input_pickable = false
+monitoring = false
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="HurtBox" unique_id=1864071914]
+position = Vector2(0, -27)
+shape = SubResource("CapsuleShape2D_essrt")
+debug_color = Color(0.93509376, 1.8289686e-05, 0.63991386, 0.41960785)

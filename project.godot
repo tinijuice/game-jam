@@ -19,11 +19,6 @@ run/main_scene="uid://cn73samwecg02"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 
-[display]
-
-window/size/viewport_width=1920
-window/size/viewport_height=1080
-
 [input]
 
 up={
@@ -50,6 +45,8 @@ right={
 [layer_names]
 
 2d_physics/layer_1="Environment"
+2d_physics/layer_5="enemy_damage"
+2d_physics/layer_6="player_damage"
 
 [rendering]
 

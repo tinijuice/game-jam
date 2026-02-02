@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://0xsavjujsk3t" path="res://assets/environment/animated_tiles/Props.png" id="12_khah1"]
 [ext_resource type="Texture2D" uid="uid://c3ykoibe7mpk" path="res://assets/environment/animated_tiles/Tree3.png" id="13_7ckqa"]
 [ext_resource type="PackedScene" uid="uid://624ouho8f7y2" path="res://scenes/entities/player/player.tscn" id="14_olj81"]
+[ext_resource type="PackedScene" uid="uid://0yr8pva6gl78" path="res://scenes/entities/enemies/enemy.tscn" id="15_o5aat"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5354r"]
 texture = ExtResource("1_qgarv")
@@ -437,4 +438,10 @@ tile_map_data = PackedByteArray("AAAbAB4ABgAAAAAAAAAlABUABgAAAAAAAAAYAAoABgAAAAA
 tile_set = SubResource("TileSet_bu3ac")
 
 [node name="Player" parent="." unique_id=860125335 instance=ExtResource("14_olj81")]
-position = Vector2(-16, 707)
+position = Vector2(-113, 753)
+
+[node name="Enemies" type="Node2D" parent="." unique_id=1379700169]
+y_sort_enabled = true
+
+[node name="Enemy" parent="Enemies" unique_id=401506810 instance=ExtResource("15_o5aat")]
+position = Vector2(142, 739)
