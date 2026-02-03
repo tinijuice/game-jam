@@ -116,6 +116,10 @@ func take_damage(damage_taken: int) -> void:
 
 
 func death() -> void:
+	var player = get_tree().get_first_node_in_group("player")
+	if player and player.has_method("on_enemy_killed"):
+		player.on_enemy_killed()
+	
 	var death_scene: Node2D = death_packed.instantiate()
 	death_scene.position = global_position + Vector2(0.0, -32.0)
 	%Effects.add_child(death_scene)

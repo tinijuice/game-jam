@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://s8weelg0rhlx"]
+
+[ext_resource type="Script" uid="uid://co3lh1f3xemyy" path="res://scenes/ui/hud.gd" id="1_kw0id"]
+
+[node name="Control" type="Control" unique_id=454942177]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kw0id")
+
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=437060961]
+layout_mode = 1
+offset_right = 451.0
+offset_bottom = 78.0
+
+[node name="HealthLabel" type="Label" parent="HealthBar" unique_id=907071938]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="TemperatureBar" type="ProgressBar" parent="." unique_id=2059844564]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -513.0
+offset_bottom = 108.0
+grow_horizontal = 0
+
+[node name="TempLabel" type="Label" parent="TemperatureBar" unique_id=2117757588]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0

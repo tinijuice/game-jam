@@ -428,14 +428,6 @@ height = 88.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_635qg"]
 size = Vector2(10, 46)
 
-[sub_resource type="Theme" id="Theme_58kc7"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nh4ur"]
-bg_color = Color(0.7886344, 0.38339615, 0.28544578, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bjvvg"]
-bg_color = Color(1.5883148e-06, 0.71776474, 0.3726796, 1)
-
 [node name="Player" type="CharacterBody2D" unique_id=860125335 groups=["player"]]
 script = ExtResource("1_635qg")
 death_packed = ExtResource("2_58kc7")
@@ -485,33 +477,6 @@ y_sort_enabled = true
 position = Vector2(0, -23)
 shape = SubResource("RectangleShape2D_635qg")
 debug_color = Color(0.7827452, 0.32132593, 0.74664986, 0.41960785)
-
-[node name="HealthBar" type="ProgressBar" parent="." unique_id=1907017283]
-offset_left = -80.0
-offset_top = 482.0
-offset_right = 80.0
-offset_bottom = 509.0
-theme = SubResource("Theme_58kc7")
-theme_type_variation = &"test"
-theme_override_constants/outline_size = 0
-theme_override_styles/background = SubResource("StyleBoxFlat_nh4ur")
-theme_override_styles/fill = SubResource("StyleBoxFlat_bjvvg")
-value = 100.0
-show_percentage = false
-
-[node name="HealthLabel" type="Label" parent="HealthBar" unique_id=1782325850]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -1.0
-offset_right = -1.0
-offset_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "100"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="SpawnPoint" type="Marker2D" parent="." unique_id=1275526649]
 position = Vector2(-163, 105)

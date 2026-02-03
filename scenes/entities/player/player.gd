@@ -13,6 +13,7 @@ enum State {
 @export var attack_damage: int = 60
 @export var hitpoints: int = 120
 @export var hitpoints_max: int = 150
+@export var temp_gain_on_kill: int = 5
 @export_category("Related Scenes")
 @export var death_packed: PackedScene
 
@@ -22,18 +23,13 @@ var move_direction: Vector2 = Vector2(0, 0)
 
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var animation_playback: AnimationNodeStateMachinePlayback = $AnimationTree["parameters/playback"]
-@onready var health_bar: ProgressBar = $HealthBar
-@onready var health_label: Label = $HealthBar/HealthLabel
+
 @onready var spawn_point: Marker2D = $SpawnPoint
 
 
 func _ready() -> void:
-	update_health_bar()
 	$HitBox.monitoring = false
 	animation_tree.set_active(true)
-	health_bar.min_value = 0
-	health_bar.max_value = hitpoints_max
-	health_bar.value = hitpoints
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -44,7 +40,6 @@ func _unhandled_input(event: InputEvent) -> void:
 var last_monitoring_state: bool = false
 
 func _physics_process(_delta: float) -> void:
-	# Print seulement quand le monitoring change
 	if $HitBox.monitoring != last_monitoring_state:
 		print("⚡ Monitoring changé: ", $HitBox.monitoring)
 		last_monitoring_state = $HitBox.monitoring
@@ -108,16 +103,13 @@ func attack() -> void:
 func take_damage(damage_taken: int) -> void:
 	hitpoints -= damage_taken
 	hitpoints = clamp(hitpoints, 0, hitpoints_max)
-	update_health_bar()
+	
 	if hitpoints <= 0 and state != State.DEAD:
 		death()
-
-
-func update_health_bar() -> void:
-	if is_instance_valid(health_bar):
-		health_bar.value = hitpoints
-	if is_instance_valid(health_label):
-		health_label.text = str(hitpoints)
+	
+	var hud = get_tree().get_root().get_node_or_null("HUD")
+	if hud:
+		hud.update_health(hitpoints)
 
 
 func death() -> void:
@@ -125,35 +117,48 @@ func death() -> void:
 		return
 
 	state = State.DEAD
-
-	# Stoppe complètement le player
 	velocity = Vector2.ZERO
 	$HitBox.monitoring = false
 
-	# Instancie la scène de mort
 	if death_packed != null:
 		var death_scene: Node2D = death_packed.instantiate()
 		death_scene.position = global_position + Vector2(0, -32)
 		%Effects.add_child(death_scene)
 
-	# Masque le player
 	$Sprite2D.visible = false
-	$HealthBar.visible = false
+	
+	if has_node("HealthBar"):
+		$HealthBar.visible = false
 
-	# Timer avant respawn
 	await get_tree().create_timer(2.0).timeout
 
-	# Respawn
 	hitpoints = hitpoints_max
-	update_health_bar()
-
 	global_position = spawn_point.global_position
 	state = State.IDLE
 	
 	$HitBox.monitoring = true
 	$Sprite2D.visible = true
-	$HealthBar.visible = true
+	
+	if has_node("HealthBar"):
+		$HealthBar.visible = true
+	
+	var hud = get_tree().get_root().get_node_or_null("HUD")
+	if hud:
+		hud.update_health(hitpoints)
+	
+	var temp_bar = get_tree().current_scene.find_child("TemperatureBar", true, false)
+	if temp_bar and temp_bar.has_method("reset_temperature"):
+		temp_bar.reset_temperature()
+
+
+func on_enemy_killed() -> void:
+	var temp_bar = get_tree().current_scene.find_child("TemperatureBar", true, false)
+	if temp_bar and temp_bar.has_method("change_temperature"):
+		temp_bar.change_temperature(temp_gain_on_kill)
 
 
 func _on_hit_box_area_entered(area: Area2D) -> void:
-	area.owner.take_damage(attack_damage)
+	if area.owner and area.owner.has_method("take_damage"):
+		area.owner.take_damage(attack_damage)
+		if area.owner.hitpoints <= 0:
+			on_enemy_killed()

@@ -1,37 +1,57 @@
-extends Control
+extends TextureProgressBar
 
-# Variable température actuelle
-var temperature: float = 0
+@export var min_temp := -40
+@export var max_temp := 40
+@export var start_temp := 0
 
-# Référence aux nodes enfants
-@onready var bar: ProgressBar = $Bar
-@onready var label: Label = $Label
+@export var decrease_every := 3
+@export var cold_damage_start := -30
+@export var extreme_cold_temp := -40
+@export var extreme_cold_damage := 5
 
-# Intervalle de mise à jour (en secondes)
-const INTERVAL: float = 3.0
+@export var player_path: NodePath
+
+var current_temp: int
+var player: Node = null
 
 func _ready():
-	# Initialiser la barre et le label
-	bar.value = temperature
-	label.text = str(temperature) + "°C"
+	min_value = min_temp
+	max_value = max_temp
 
-	# Lancer le timer pour faire descendre la température
-	start_temperature_loop()
+	current_temp = start_temp
+	value = current_temp
 
-# Fonction pour mettre à jour la température toutes les 3 secondes
-func start_temperature_loop() -> void:
-	# Utilisation d'un timer intégré
-	async_func()
+	if player_path != null:
+		player = get_node(player_path)
+	if not player:
+		print("⚠️ Player non assigné dans TemperatureBar !")
 
-# Fonction asynchrone qui boucle
-async func async_func() -> void:
+	start_cooling()
+
+
+func start_cooling() -> void:
 	while true:
-		await get_tree().create_timer(INTERVAL).timeout
+		await get_tree().create_timer(decrease_every).timeout
 		change_temperature(-1)
 
-# Fonction qui change la température et met à jour barre + label
-func change_temperature(delta: float) -> void:
-	temperature += delta
-	temperature = clamp(temperature, -40, 40)
-	bar.value = temperature
-	label.text = str(temperature) + "°C"
+
+func change_temperature(amount: int) -> void:
+	if not player:
+		return
+
+	var old_temp = current_temp
+	current_temp = clamp(current_temp + amount, min_temp, max_temp)
+	value = current_temp
+
+	if current_temp <= cold_damage_start and current_temp > extreme_cold_temp:
+		var damage = abs(current_temp - old_temp)
+		if damage > 0:
+			player.take_damage(damage)
+	elif current_temp <= extreme_cold_temp:
+		player.take_damage(extreme_cold_damage)
+
+
+func reset_temperature() -> void:
+	current_temp = start_temp
+	value = current_temp
+	print("🌡️ Température réinitialisée à: ", start_temp)
