@@ -21,9 +21,9 @@ var move_direction: Vector2 = Vector2(0, 0)
 
 
 func _ready() -> void:
-	$HitBox.monitoring == false
+	$HitBox.monitoring = false
 	animation_tree.set_active(true)
-	print("monitoring: ", $HitBox.monitorable)
+	print("monitoring: ", $HitBox.monitoring)
 
 
 func _unhandled_input(event: InputEvent) -> void:
