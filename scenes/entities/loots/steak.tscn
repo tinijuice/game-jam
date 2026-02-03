@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cnqwt8ugyg8ux"]
+
+[ext_resource type="Script" uid="uid://bc7vuebbisw3k" path="res://scenes/entities/loots/steak.gd" id="1_5y6s1"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5y6s1"]
+radius = 37.01351
+
+[node name="ItemPickup" type="Area2D" unique_id=1539309686]
+script = ExtResource("1_5y6s1")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1463050241]
+scale = Vector2(0.12777777, 0.12777779)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1167287719]
+shape = SubResource("CircleShape2D_5y6s1")

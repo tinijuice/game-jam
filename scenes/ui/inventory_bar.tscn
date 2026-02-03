@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://ds4cftn8ans5g"]
+
+[ext_resource type="PackedScene" uid="uid://bkykqkec8vb31" path="res://scenes/ui/inventory_slot.tscn" id="1_65we4"]
+[ext_resource type="Script" uid="uid://dst2031fip8mt" path="res://scenes/ui/inventory_bar.gd" id="1_aw4w6"]
+
+[node name="InventoryBar" type="CanvasLayer" unique_id=948304086]
+script = ExtResource("1_aw4w6")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=936199997]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -220.0
+offset_top = -100.0
+offset_right = 220.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="InventorySlot" parent="HBoxContainer" unique_id=797886922 instance=ExtResource("1_65we4")]
+layout_mode = 2
+
+[node name="InventorySlot2" parent="HBoxContainer" unique_id=674086671 instance=ExtResource("1_65we4")]
+layout_mode = 2
+
+[node name="InventorySlot3" parent="HBoxContainer" unique_id=1662182776 instance=ExtResource("1_65we4")]
+layout_mode = 2
+
+[node name="InventorySlot4" parent="HBoxContainer" unique_id=1162960422 instance=ExtResource("1_65we4")]
+layout_mode = 2
+
+[node name="InventorySlot5" parent="HBoxContainer" unique_id=465834052 instance=ExtResource("1_65we4")]
+layout_mode = 2
