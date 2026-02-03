@@ -19,6 +19,11 @@ run/main_scene="uid://cn73samwecg02"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
 [global_group]
 
 player=""
