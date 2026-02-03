@@ -13,7 +13,7 @@ enum State {
 @export var attack_damage: int = 60
 @export var hitpoints: int = 120
 @export var hitpoints_max: int = 150
-@export var temp_gain_on_kill: int = 5
+@export var temp_gain_on_kill: int = 2
 @export_category("Related Scenes")
 @export var death_packed: PackedScene
 

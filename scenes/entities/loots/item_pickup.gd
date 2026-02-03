@@ -1,6 +1,6 @@
 extends Area2D
 
-@export var item_name: String = "Wood"
+@export var item_name: String = ""
 @export var quantity: int = 1
 
 @onready var sprite: Sprite2D = $Sprite2D

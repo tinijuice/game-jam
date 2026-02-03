@@ -4,8 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://xv5pm87t6hru" path="res://scenes/effects/death.tscn" id="2_58kc7"]
 [ext_resource type="Texture2D" uid="uid://8bh43wfdmtwi" path="res://assets/sprites/player/player_main.png" id="3_58kc7"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_635qg"]
-radius = 23.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_58kc7"]
+height = 44.0
 
 [sub_resource type="Animation" id="Animation_1hmtu"]
 length = 0.001
@@ -439,8 +439,9 @@ hframes = 6
 vframes = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1115644018]
-position = Vector2(0, -15)
-shape = SubResource("CircleShape2D_635qg")
+position = Vector2(0, -8)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_58kc7")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2073582156]
 

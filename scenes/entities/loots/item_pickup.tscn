@@ -8,8 +8,7 @@ radius = 37.01351
 [node name="ItemPickup" type="Area2D" unique_id=1539309686]
 script = ExtResource("1_5y6s1")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1463050241]
-scale = Vector2(0.12777777, 0.12777779)
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=754795005]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1167287719]
 shape = SubResource("CircleShape2D_5y6s1")
