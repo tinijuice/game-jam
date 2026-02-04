@@ -140,7 +140,7 @@ func death() -> void:
 		world_effects.add_child(death_scene)
 		death_scene.global_position = death_position
 	
-	EnemyRespawner.schedule_respawn(scene_file_path, 90.0)
+	EnemyRespawner.schedule_respawn(scene_file_path, 15.0)
 	
 	queue_free()
 
