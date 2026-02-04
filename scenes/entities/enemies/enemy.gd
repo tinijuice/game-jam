@@ -22,14 +22,13 @@ enum State {
 @export var death_packed: PackedScene
 
 var state: State = State.IDLE
+var spawn_point: Vector2
 
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var animation_playback: AnimationNodeStateMachinePlayback = $AnimationTree["parameters/playback"]
 @onready var player: CharacterBody2D = get_tree().get_first_node_in_group("player")
 @onready var nav_agent: NavigationAgent2D = $NavigationAgent2D
 
-
-var spawn_point: Vector2
 
 func _ready() -> void:
 	animation_tree.set_active(true)
@@ -38,7 +37,7 @@ func _ready() -> void:
 	# Initialiser spawn_point
 	if spawn_point == Vector2.ZERO:
 		spawn_point = global_position
-	
+
 
 func _physics_process(_delta: float) -> void:
 	if state == State.DEAD:
@@ -78,7 +77,6 @@ func move() -> void:
 		_on_navigation_agent_2d_velocity_computed(velocity)
 	move_and_slide()
 
-
 	if state == State.IDLE or State.CHASE:
 		if velocity.x < -0.01:
 			$Sprite2D.flip_h = true
@@ -102,6 +100,7 @@ func update_animation() -> void:
 			animation_playback.travel("run")
 		State.ATTACK:
 			animation_playback.travel("attack")
+
 
 func attack() -> void:
 	var player_pos: Vector2 = player.global_position
@@ -131,11 +130,9 @@ func death() -> void:
 		var death_scene: Node2D = death_packed.instantiate()
 		var death_position = global_position + Vector2(0.0, -32.0)
 		
-		# Ajouter l'animation à la scène principale, pas à l'ennemi
 		var world_effects = get_tree().current_scene.get_node_or_null("Effects")
 		
 		if not world_effects:
-			# Créer un node Effects global s'il n'existe pas
 			world_effects = Node2D.new()
 			world_effects.name = "Effects"
 			get_tree().current_scene.add_child(world_effects)
@@ -143,7 +140,11 @@ func death() -> void:
 		world_effects.add_child(death_scene)
 		death_scene.global_position = death_position
 	
-	# Programmer le respawn
-	EnemyRespawner.schedule_respawn(scene_file_path, 3.0)
+	EnemyRespawner.schedule_respawn(scene_file_path, 90.0)
 	
 	queue_free()
+
+
+func _on_hit_box_area_entered(area: Area2D) -> void:
+	if area.owner and area.owner.has_method("take_damage"):
+		area.owner.take_damage(attack_damage)
