@@ -630,12 +630,11 @@ position = Vector2(-689, 801)
 position = Vector2(-606, 744)
 
 [node name="SpawnZones" type="Node2D" parent="." unique_id=218006402]
-visible = false
 
 [node name="SpawnZone1" type="Polygon2D" parent="SpawnZones" unique_id=1529589669]
 position = Vector2(1005, 831)
 color = Color(0.27058825, 1, 0.24705882, 0.43137255)
-polygon = PackedVector2Array(-486, -780, 277, -609, 486, -306, 503, -64, 345, 185, 335, 421, 584, 599, 331, 733, -45, 717, -358, 555, -594, 316, -779, 24, -806, -185, -711, -451, -607, -723)
+polygon = PackedVector2Array(-417, -234, -122, -217, -181, -28, -436, -53)
 script = SubResource("GDScript_72sho")
 
 [editable path="ItemsPickup/Campfire"]
