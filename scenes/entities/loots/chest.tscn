@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://cp7j7ocfn0msn"]
+
+[ext_resource type="Texture2D" uid="uid://cvysbt0g51bth" path="res://assets/sprites/loots/Chest.png" id="1_ceqhv"]
+[ext_resource type="Script" uid="uid://qifv0jv44f1m" path="res://scenes/entities/loots/chest.gd" id="1_nwyq7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nwyq7"]
+size = Vector2(104, 89)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x620g"]
+size = Vector2(62, 32)
+
+[node name="Node2D" type="Area2D" unique_id=1408229763]
+script = ExtResource("1_nwyq7")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1744921252]
+scale = Vector2(3.25, 3.25)
+texture = ExtResource("1_ceqhv")
+hframes = 9
+vframes = 4
+frame = 24
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=567288358]
+scale = Vector2(1.3706913, 1.3706913)
+shape = SubResource("RectangleShape2D_nwyq7")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=210687634]
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D" unique_id=693617236]
+position = Vector2(0, 11)
+shape = SubResource("RectangleShape2D_x620g")
+debug_color = Color(0.96168846, 1.540184e-06, 0.51167804, 0.41960785)

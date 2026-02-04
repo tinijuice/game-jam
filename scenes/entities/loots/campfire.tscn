@@ -1,10 +1,12 @@
 [gd_scene format=3 uid="uid://br720l0eskyoq"]
 
-[ext_resource type="Script" uid="uid://rmo7ogxjyhpw" path="res://scenes/maps/campfire.gd" id="1_pyifo"]
-[ext_resource type="Texture2D" uid="uid://begkx1r5rq0rg" path="res://assets/environment/props/campfire-Sheet.png" id="2_jv6po"]
+[ext_resource type="Script" path="res://scenes/maps/campfire.gd" id="1_pyifo"]
+[ext_resource type="Texture2D" uid="uid://ort4vxassy1p" path="res://assets/environment/animated_tiles/Campfire.png.png" id="2_jv6po"]
+[ext_resource type="AudioStream" uid="uid://bog8t0njs4gga" path="res://assets/audio/feu de camp/fire.wav" id="3_jv6po"]
 
 [sub_resource type="Animation" id="Animation_anwnr"]
-length = 0.001
+length = 0.6
+step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -12,10 +14,10 @@ tracks/0/path = NodePath(".:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
 "update": 1,
-"values": [0]
+"values": []
 }
 
 [sub_resource type="Animation" id="Animation_m3oly"]
@@ -43,11 +45,11 @@ _data = {
 }
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_m3oly"]
-radius = 20.0
-height = 58.0
+radius = 25.0
+height = 74.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_anwnr"]
-radius = 7.5
+radius = 8.5
 height = 31.0
 
 [node name="Campfire" type="Area2D" unique_id=208525708]
@@ -56,22 +58,31 @@ scale = Vector2(2, 2)
 script = ExtResource("1_pyifo")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1193920980]
-position = Vector2(0, -25)
+position = Vector2(4.5, -15)
+scale = Vector2(0.09392467, 0.09392474)
 texture = ExtResource("2_jv6po")
-hframes = 6
+hframes = 7
+frame = 4
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D" unique_id=735556363]
 libraries/ = SubResource("AnimationLibrary_enmnn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1464443933]
-position = Vector2(0, -10.5)
+position = Vector2(0, -8.5)
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_m3oly")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=104276468]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=3707074]
-position = Vector2(0, -11)
+position = Vector2(0, -8.5)
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_anwnr")
 debug_color = Color(0.9464695, 4.9093364e-06, 0.58996165, 0.41960785)
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=728995712]
+position = Vector2(-5, -8)
+stream = ExtResource("3_jv6po")
+volume_db = 15.0
+autoplay = true
+max_distance = 4096.0

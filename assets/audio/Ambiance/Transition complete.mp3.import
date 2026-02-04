@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cybwq7gq63vch"
+path="res://.godot/imported/Transition complete.mp3-ad100e4fa2321e47b415132aab0a4f17.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/Ambiance/Transition complete.mp3"
+dest_files=["res://.godot/imported/Transition complete.mp3-ad100e4fa2321e47b415132aab0a4f17.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

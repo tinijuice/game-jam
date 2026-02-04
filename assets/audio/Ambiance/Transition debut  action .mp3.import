@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bk4fb783ig1ct"
+path="res://.godot/imported/Transition debut  action .mp3-dadc27268d93f9b3f64126e34e5d708c.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/Ambiance/Transition debut  action .mp3"
+dest_files=["res://.godot/imported/Transition debut  action .mp3-dadc27268d93f9b3f64126e34e5d708c.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

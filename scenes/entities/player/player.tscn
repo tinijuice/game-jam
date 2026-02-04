@@ -5,7 +5,8 @@
 [ext_resource type="Texture2D" uid="uid://8bh43wfdmtwi" path="res://assets/sprites/player/player_main.png" id="3_58kc7"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_58kc7"]
-height = 44.0
+radius = 21.0
+height = 42.0
 
 [sub_resource type="Animation" id="Animation_1hmtu"]
 length = 0.001

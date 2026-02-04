@@ -23,16 +23,21 @@ enum State {
 
 var state: State = State.IDLE
 
-@onready var spawn_point: Vector2 = global_position
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var animation_playback: AnimationNodeStateMachinePlayback = $AnimationTree["parameters/playback"]
 @onready var player: CharacterBody2D = get_tree().get_first_node_in_group("player")
 @onready var nav_agent: NavigationAgent2D = $NavigationAgent2D
 
 
+var spawn_point: Vector2
+
 func _ready() -> void:
 	animation_tree.set_active(true)
 	await get_tree().process_frame
+	
+	# Initialiser spawn_point
+	if spawn_point == Vector2.ZERO:
+		spawn_point = global_position
 	
 
 func _physics_process(_delta: float) -> void:
@@ -116,15 +121,29 @@ func take_damage(damage_taken: int) -> void:
 
 
 func death() -> void:
+	state = State.DEAD
+	
 	var player = get_tree().get_first_node_in_group("player")
 	if player and player.has_method("on_enemy_killed"):
 		player.on_enemy_killed()
 	
-	var death_scene: Node2D = death_packed.instantiate()
-	death_scene.position = global_position + Vector2(0.0, -32.0)
-	%Effects.add_child(death_scene)
+	if death_packed:
+		var death_scene: Node2D = death_packed.instantiate()
+		var death_position = global_position + Vector2(0.0, -32.0)
+		
+		# Ajouter l'animation à la scène principale, pas à l'ennemi
+		var world_effects = get_tree().current_scene.get_node_or_null("Effects")
+		
+		if not world_effects:
+			# Créer un node Effects global s'il n'existe pas
+			world_effects = Node2D.new()
+			world_effects.name = "Effects"
+			get_tree().current_scene.add_child(world_effects)
+		
+		world_effects.add_child(death_scene)
+		death_scene.global_position = death_position
+	
+	# Programmer le respawn
+	EnemyRespawner.schedule_respawn(scene_file_path, 3.0)
+	
 	queue_free()
-
-
-func _on_hit_box_area_entered(area: Area2D) -> void:
-	area.owner.take_damage(attack_damage)
