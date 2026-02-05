@@ -193,6 +193,7 @@ func drop_steak() -> void:
 	world.add_child(steak_item)
 	steak_item.global_position = global_position
 	
-	var steak_texture = load("res://assets/sprites/loots/Steak.webp")
+	var steak_texture = load("res://assets/sprites/loots/Steak.png")
 	if steak_texture and steak_item.has_node("item"):
 		steak_item.get_node("item").texture = steak_texture
+		steak_item.get_node("item").scale = Vector2(1.0, 1.0)

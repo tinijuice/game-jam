@@ -24,7 +24,6 @@
 [ext_resource type="PackedScene" uid="uid://cnqwt8ugyg8ux" path="res://scenes/entities/loots/item_pickup.tscn" id="22_3plql"]
 [ext_resource type="PackedScene" uid="uid://dwjf8dpp2hp1b" path="res://scenes/entities/mobs/pig.tscn" id="23_q658n"]
 [ext_resource type="PackedScene" uid="uid://c7ihy14t7hlfx" path="res://scenes/entities/enemies/snowman.tscn" id="24_72sho"]
-[ext_resource type="Texture2D" uid="uid://cqr4hda084gul" path="res://assets/sprites/loots/Steak.png" id="25_q658n"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q658n"]
 texture = ExtResource("1_qgarv")
@@ -503,6 +502,9 @@ func get_random_point_inside() -> Vector2:
 	return global_position
 "
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_72sho"]
+load_path = "res://.godot/imported/Steak.webp-04b82d54c97891b6ff6349f698cd424d.ctex"
+
 [node name="TestMap" type="Node2D" unique_id=1396290268]
 y_sort_enabled = true
 script = ExtResource("1_72sho")
@@ -536,7 +538,7 @@ tile_set = SubResource("TileSet_72sho")
 
 [node name="Player" parent="." unique_id=860125335 instance=ExtResource("14_olj81")]
 z_index = 1
-position = Vector2(4236, 1419)
+position = Vector2(5711, 1494)
 
 [node name="MountSnow" type="TileMapLayer" parent="." unique_id=1760621048]
 z_index = 1
@@ -639,7 +641,7 @@ item_name = "Steak"
 quantity = 3
 
 [node name="item" parent="ItemPickup" index="1" unique_id=754795005]
-scale = Vector2(0.8437486, 0.8437486)
-texture = ExtResource("25_q658n")
+scale = Vector2(0.10555556, 0.10555556)
+texture = SubResource("CompressedTexture2D_72sho")
 
 [editable path="ItemPickup"]
