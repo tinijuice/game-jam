@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="GDC_RPG_Essentials_Starter-Kit"
-run/main_scene="uid://cn73samwecg02"
+run/main_scene="uid://b1xyp3sr8x2c5"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 
