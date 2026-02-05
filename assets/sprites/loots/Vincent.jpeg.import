@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dxsgrlppgugun"
-path="res://.godot/imported/Boar_Idle_with_shadow.png-2737bdc52c74a20d31ed2f5012cca3d7.ctex"
+uid="uid://73ogkdbsiqwo"
+path="res://.godot/imported/Vincent.jpeg-1c8b1b81d62c165cd299d2bc2050f54d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/enemies/Boar/Boar_Idle_with_shadow.png"
-dest_files=["res://.godot/imported/Boar_Idle_with_shadow.png-2737bdc52c74a20d31ed2f5012cca3d7.ctex"]
+source_file="res://assets/sprites/loots/Vincent.jpeg"
+dest_files=["res://.godot/imported/Vincent.jpeg-1c8b1b81d62c165cd299d2bc2050f54d.ctex"]
 
 [params]
 

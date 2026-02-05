@@ -28,7 +28,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("use_item"):
 		use_selected_item()
 	
-	# Test simple et direct
 	if event is InputEventMouseButton:
 		if event.button_index == 2 and event.pressed:
 			place_selected_item()
@@ -54,9 +53,7 @@ func use_selected_item() -> void:
 
 
 func place_selected_item() -> void:
-	print("📦 place_selected_item appelée")
 	var slot_data = Inventory.get_slot(selected_slot)
-	print("🎯 Slot sélectionné: ", selected_slot, " | Item: ", slot_data["name"])
 	if slot_data["name"] != "":
 		place_item(slot_data["name"])
 
@@ -70,33 +67,18 @@ func place_item(item_name: String) -> void:
 				
 				var player = get_tree().get_first_node_in_group("player")
 				if player:
-					# Convertir position souris écran → monde
-					var camera = get_viewport().get_camera_2d()
-					var mouse_world_pos = Vector2.ZERO
+					var mouse_world_pos = player.get_global_mouse_position()
 					
-					if camera:
-						var mouse_screen = get_viewport().get_mouse_position()
-						var viewport_size = get_viewport().get_visible_rect().size
-						mouse_world_pos = camera.global_position + (mouse_screen - viewport_size / 2)
-					else:
-						mouse_world_pos = get_viewport().get_mouse_position()
-					
-					# Vérifier la distance avec le joueur
-					var max_distance = 200.0  # Rayon en pixels (ajuste selon tes besoins)
+					var max_distance = 200.0
 					var distance = player.global_position.distance_to(mouse_world_pos)
 					
 					if distance <= max_distance:
-						campfire.global_position = mouse_world_pos
 						get_tree().current_scene.add_child(campfire)
+						campfire.global_position = mouse_world_pos
+						
 						Inventory.remove_item("Campfire", 1)
-						print("🔥 Feu de camp placé à: ", campfire.global_position)
 					else:
-						print("⚠️ Trop loin ! Distance: ", int(distance), " (max: ", max_distance, ")")
-						campfire.queue_free()  # Supprime l'instance non utilisée
-				else:
-					campfire.global_position = Vector2(0, 0)
-					get_tree().current_scene.add_child(campfire)
-					Inventory.remove_item("Campfire", 1)
+						campfire.queue_free()
 
 
 
@@ -111,7 +93,20 @@ func use_item(item_name: String) -> void:
 				if hud:
 					hud.update_health(player.hitpoints)
 				Inventory.remove_item("Steak", 1)
-				print("🥩 Steak consommé: +20 HP")
+
+		"Vincent":
+			var player = get_tree().get_first_node_in_group("player")
+			if player:
+				player.hitpoints = 0  # ← Directement à 0 pour mourir
+				var hud = get_tree().get_root().get_node_or_null("HUD")
+				if hud:
+					hud.update_health(player.hitpoints)
+				
+				if player.has_method("death"):
+					player.death()
+				
+				Inventory.remove_item("Vincent", 1)
+				print("💀 Vincent consommé... RIP")
 
 
 func update_ui() -> void:

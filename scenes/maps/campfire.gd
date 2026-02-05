@@ -1,7 +1,7 @@
 extends Area2D
 
-@export var heal_amount: int = 1
-@export var heal_interval: float = 2.0
+@export var heal_amount: int = 2
+@export var heal_interval: float = 1
 @export var temperature_gain: int = 2
 
 var players_nearby: Array = []
@@ -19,8 +19,6 @@ func _ready() -> void:
 	animation_player = find_child("AnimationPlayer", true, false)
 	if animation_player and animation_player.has_animation("fire"):
 		animation_player.play("fire")
-	else:
-		print("⚠️ AnimationPlayer ou animation 'fire' non trouvé")
 
 
 func _on_body_entered(body: Node2D) -> void:
@@ -29,7 +27,12 @@ func _on_body_entered(body: Node2D) -> void:
 	
 	if body not in players_nearby:
 		players_nearby.append(body)
-		print("🔥 Player près du feu")
+		
+		# Arrêter la perte de température
+		var temp_bar = get_tree().current_scene.find_child("TemperatureBar", true, false)
+		if temp_bar:
+			temp_bar.is_near_fire = true  # ← Ajouter cette variable dans TemperatureBar
+		
 		if not is_healing:
 			start_healing()
 
@@ -40,8 +43,13 @@ func _on_body_exited(body: Node2D) -> void:
 	
 	if body in players_nearby:
 		players_nearby.erase(body)
-		print("❄️ Player éloigné du feu")
+		
+		# Reprendre la perte de température si plus personne près du feu
 		if players_nearby.is_empty():
+			var temp_bar = get_tree().current_scene.find_child("TemperatureBar", true, false)
+			if temp_bar:
+				temp_bar.is_near_fire = false
+			
 			is_healing = false
 
 
@@ -56,7 +64,6 @@ func start_healing() -> void:
 		for player in players_nearby:
 			if is_instance_valid(player):
 				heal_player(player)
-				print("💚 +", heal_amount, " HP | 🌡️ +", temperature_gain, "°")
 
 
 func heal_player(player: Node) -> void:

@@ -38,9 +38,6 @@ func _ready() -> void:
 		spawn_point.name = "PlayerSpawnPoint"
 		spawn_point.global_position = global_position
 		get_tree().current_scene.add_child(spawn_point)
-		print("⚠️ Aucun spawn point trouvé, créé à : ", global_position)
-	else:
-		print("✅ Spawn point trouvé à : ", spawn_point.global_position)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -55,7 +52,6 @@ var last_monitoring_state: bool = false
 
 func _physics_process(_delta: float) -> void:
 	if $HitBox.monitoring != last_monitoring_state:
-		print("⚡ Monitoring changé: ", $HitBox.monitoring)
 		last_monitoring_state = $HitBox.monitoring
 	
 	if state == State.DEAD:

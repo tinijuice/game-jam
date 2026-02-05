@@ -23,6 +23,7 @@ enum State {
 
 var state: State = State.IDLE
 var spawn_point: Vector2
+var has_chased: bool = false  # ← Nouvelle variable pour tracker s'il a déjà chassé
 
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var animation_playback: AnimationNodeStateMachinePlayback = $AnimationTree["parameters/playback"]
@@ -34,7 +35,6 @@ func _ready() -> void:
 	animation_tree.set_active(true)
 	await get_tree().process_frame
 	
-	# Initialiser spawn_point
 	if spawn_point == Vector2.ZERO:
 		spawn_point = global_position
 
@@ -44,17 +44,20 @@ func _physics_process(_delta: float) -> void:
 		return
 	if state == State.ATTACK:
 		return
+	
 	if distance_to_player() <= attack_range:
 		state = State.ATTACK
 		attack()
 	elif distance_to_player() <= aggro_range:
 		state = State.CHASE
+		has_chased = true  # ← Marquer qu'il a chassé
 		move()
-	elif global_position.distance_to(spawn_point) > 32:
+	elif global_position.distance_to(spawn_point) > 32 and not has_chased:  # ← Vérifier s'il n'a pas encore chassé
 		state = State.RETURN
 		move()
 	elif state != State.IDLE:
 		state = State.IDLE
+		velocity = Vector2.ZERO
 		update_animation()
 
 

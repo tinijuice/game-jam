@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://cr6f60iddar60"]
+[gd_scene format=3 uid="uid://dwjf8dpp2hp1b"]
 
-[ext_resource type="Script" path="res://scenes/entities/mobs/mob.gd" id="1_mlss4"]
+[ext_resource type="Script" uid="uid://condrk1adbclc" path="res://scenes/entities/mobs/mob.gd" id="1_mlss4"]
 [ext_resource type="PackedScene" uid="uid://xv5pm87t6hru" path="res://scenes/effects/death.tscn" id="2_c8ylr"]
 [ext_resource type="Texture2D" uid="uid://dqm2u1vkgs84" path="res://assets/sprites/mobs/Pig.png" id="3_gxqch"]
 [ext_resource type="PackedScene" uid="uid://cnqwt8ugyg8ux" path="res://scenes/entities/loots/item_pickup.tscn" id="3_r18b4"]

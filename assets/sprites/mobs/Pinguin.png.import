@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dp8u5nsiqbk5y"
-path="res://.godot/imported/test.png-6892310bf6c5a3d2ebc99404fe4fbe88.ctex"
+uid="uid://dtpuotjx8wckv"
+path="res://.godot/imported/Pinguin.png-bc71f9bde62b8ba274698e1781a7d2b9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/enemies/test.png"
-dest_files=["res://.godot/imported/test.png-6892310bf6c5a3d2ebc99404fe4fbe88.ctex"]
+source_file="res://assets/sprites/mobs/Pinguin.png"
+dest_files=["res://.godot/imported/Pinguin.png-bc71f9bde62b8ba274698e1781a7d2b9.ctex"]
 
 [params]
 

@@ -420,6 +420,8 @@ size = Vector2(23, 46)
 
 [node name="Bear" type="CharacterBody2D" unique_id=860125335]
 script = ExtResource("1_gc5ao")
+speed = 100
+aggro_range = 600.0
 death_packed = ExtResource("2_coomu")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1713848258]
@@ -449,7 +451,6 @@ path_postprocessing = 1
 avoidance_enabled = true
 radius = 48.0
 max_speed = 128.0
-debug_enabled = true
 debug_use_custom = true
 debug_path_custom_color = Color(1, 0.24000001, 0.25266647, 1)
 

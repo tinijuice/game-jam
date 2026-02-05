@@ -1,9 +1,7 @@
-[gd_scene format=3 uid="uid://cr6f60iddar60"]
+[gd_scene format=3 uid="uid://g44oseoyj33e"]
 
-[ext_resource type="Script" path="res://scenes/entities/mobs/mob.gd" id="1_mlss4"]
-[ext_resource type="PackedScene" uid="uid://xv5pm87t6hru" path="res://scenes/effects/death.tscn" id="2_c8ylr"]
-[ext_resource type="Texture2D" uid="uid://dqm2u1vkgs84" path="res://assets/sprites/mobs/Pig.png" id="3_gxqch"]
-[ext_resource type="PackedScene" uid="uid://cnqwt8ugyg8ux" path="res://scenes/entities/loots/item_pickup.tscn" id="3_r18b4"]
+[ext_resource type="Script" uid="uid://tls7s382b7db" path="res://scenes/entities/mobs/pinguin.gd" id="1_oaany"]
+[ext_resource type="Texture2D" uid="uid://dtpuotjx8wckv" path="res://assets/sprites/mobs/Pinguin.png" id="4_7dfm0"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gxqch"]
 radius = 16.0
@@ -78,10 +76,10 @@ tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(),
-"transitions": PackedFloat32Array(),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": []
+"values": [6, 7, 8, 9, 10, 11]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -90,10 +88,10 @@ tracks/1/path = NodePath("Sprite2D:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
 "update": 1,
-"values": [8, 9, 10, 11, 12, 13, 14, 15]
+"values": []
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -102,10 +100,10 @@ tracks/2/path = NodePath("Sprite2D:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.25, 0.25120947, 0.3, 0.4, 0.4682408, 0.499, 0.5, 0.6, 0.7, 0.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0.1, 0.2, 0.3, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(-2, -31), Vector2(-2.5, -31.5), Vector2(-1, -32), Vector2(-1.93, -32), Vector2(-7.073, -32), Vector2(-7, -32), Vector2(-9.143, -32), Vector2(-9.994, -32), Vector2(-9.635, -32), Vector2(-14.786, -32), Vector2(-21.524, -31.667), Vector2(-26.762, -31.333), Vector2(-27, -31)]
+"values": [Vector2(-1, -32), Vector2(-2, -32), Vector2(-3.8, -32), Vector2(-3.4, -32), Vector2(-3.2, -32)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_nh4ur"]
@@ -187,17 +185,15 @@ graph_offset = Vector2(-5, 157)
 radius = 27.0
 height = 76.0
 
-[node name="Pig" type="CharacterBody2D" unique_id=860125335]
+[node name="Pinguin" type="CharacterBody2D" unique_id=860125335]
 position = Vector2(13, -19)
-script = ExtResource("1_mlss4")
-death_packed = ExtResource("2_c8ylr")
-item_pickup_scene = ExtResource("3_r18b4")
+script = ExtResource("1_oaany")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1713848258]
 position = Vector2(-1, -32)
-texture = ExtResource("3_gxqch")
-hframes = 8
-vframes = 2
+texture = ExtResource("4_7dfm0")
+hframes = 6
+vframes = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1115644018]
 position = Vector2(-12, 3)
