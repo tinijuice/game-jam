@@ -3,9 +3,12 @@
 [ext_resource type="Script" uid="uid://cg5nvio2eojui" path="res://scenes/entities/enemies/enemy.gd" id="1_gc5ao"]
 [ext_resource type="PackedScene" uid="uid://xv5pm87t6hru" path="res://scenes/effects/death.tscn" id="2_coomu"]
 [ext_resource type="Texture2D" uid="uid://bm560uqmfqs0k" path="res://assets/sprites/enemies/SnowMan.png" id="3_coomu"]
+[ext_resource type="AudioStream" uid="uid://bshirlm88aki1" path="res://assets/audio/Snowman/Attack.mp3" id="4_m1etv"]
+[ext_resource type="AudioStream" uid="uid://7cepts2k3v58" path="res://assets/audio/Snowman/walk.mp3" id="7_mhqeq"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_635qg"]
-radius = 23.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_g4d4f"]
+radius = 14.0
+height = 56.0
 
 [sub_resource type="Animation" id="Animation_1hmtu"]
 length = 0.9
@@ -418,7 +421,7 @@ height = 74.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c8ylr"]
 size = Vector2(23, 46)
 
-[node name="Bear" type="CharacterBody2D" unique_id=860125335]
+[node name="Snowman" type="CharacterBody2D" unique_id=860125335]
 script = ExtResource("1_gc5ao")
 speed = 100
 aggro_range = 600.0
@@ -432,7 +435,9 @@ hframes = 10
 vframes = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1115644018]
-shape = SubResource("CircleShape2D_635qg")
+position = Vector2(-6, -7)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_g4d4f")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2073582156]
 
@@ -480,6 +485,15 @@ position = Vector2(3.8146973e-06, -1.5258789e-05)
 rotation = -0.0038936138
 shape = SubResource("RectangleShape2D_c8ylr")
 debug_color = Color(0.7827452, 0.32132593, 0.74664986, 0.41960785)
+
+[node name="SoundMob" type="Node2D" parent="." unique_id=1938136939]
+
+[node name="AttackSound" type="AudioStreamPlayer2D" parent="." unique_id=1028838403]
+stream = ExtResource("4_m1etv")
+
+[node name="Walk" type="AudioStreamPlayer2D" parent="." unique_id=687259191]
+stream = ExtResource("7_mhqeq")
+volume_db = -5.0
 
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
 [connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]

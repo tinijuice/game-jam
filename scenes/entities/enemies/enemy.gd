@@ -23,12 +23,18 @@ enum State {
 
 var state: State = State.IDLE
 var spawn_point: Vector2
-var has_chased: bool = false  # ← Nouvelle variable pour tracker s'il a déjà chassé
+var has_chased: bool = false
 
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var animation_playback: AnimationNodeStateMachinePlayback = $AnimationTree["parameters/playback"]
-@onready var player: CharacterBody2D = get_tree().get_first_node_in_group("player")
 @onready var nav_agent: NavigationAgent2D = $NavigationAgent2D
+
+var idle_sounds: Array[AudioStreamPlayer2D] = []  
+
+var sound_timer: float = 0.0
+var sound_interval: float = 0.0
+
+var player: CharacterBody2D = null
 
 
 func _ready() -> void:
@@ -37,37 +43,97 @@ func _ready() -> void:
 	
 	if spawn_point == Vector2.ZERO:
 		spawn_point = global_position
+	
+	load_idle_sounds()
+	
+	sound_interval = randf_range(3.0, 15.0)
+	sound_timer = randf_range(0.0, sound_interval)
 
 
-func _physics_process(_delta: float) -> void:
+func load_idle_sounds() -> void:
+	var sound_mob = get_node_or_null("SoundMob")
+	
+	if not sound_mob:
+		push_warning("Aucun node 'SoundMob' trouvé pour %s" % name)
+		return
+	
+	for child in sound_mob.get_children():
+		if child is AudioStreamPlayer2D:
+			idle_sounds.append(child)
+	
+	if idle_sounds.is_empty():
+		push_warning("Aucun AudioStreamPlayer2D trouvé dans SoundMob de %s" % name)
+
+
+func get_player() -> CharacterBody2D:
+	if not is_instance_valid(player):
+		player = get_tree().get_first_node_in_group("player")
+	return player
+
+
+func _physics_process(delta: float) -> void:
+	if state != State.DEAD:
+		sound_timer += delta
+		if sound_timer >= sound_interval:
+			play_random_idle_sound()
+			sound_timer = 0.0
+	
+	var current_player = get_player()
+	
+	if not is_instance_valid(current_player):
+		if state != State.IDLE and state != State.DEAD:
+			state = State.IDLE
+			velocity = Vector2.ZERO
+			var walk_sound = get_node_or_null("Walk")
+			if walk_sound and walk_sound is AudioStreamPlayer2D:
+				walk_sound.stop()
+			update_animation()
+		return
+	
 	if state == State.DEAD:
 		return
 	if state == State.ATTACK:
+		var walk_sound = get_node_or_null("Walk")
+		if walk_sound and walk_sound is AudioStreamPlayer2D:
+			walk_sound.stop()
 		return
 	
 	if distance_to_player() <= attack_range:
 		state = State.ATTACK
+		var walk_sound = get_node_or_null("Walk")
+		if walk_sound and walk_sound is AudioStreamPlayer2D:
+			walk_sound.stop()
 		attack()
 	elif distance_to_player() <= aggro_range:
 		state = State.CHASE
-		has_chased = true  # ← Marquer qu'il a chassé
+		has_chased = true
 		move()
-	elif global_position.distance_to(spawn_point) > 32 and not has_chased:  # ← Vérifier s'il n'a pas encore chassé
+	elif global_position.distance_to(spawn_point) > 32 and not has_chased:
 		state = State.RETURN
 		move()
 	elif state != State.IDLE:
 		state = State.IDLE
 		velocity = Vector2.ZERO
+		var walk_sound = get_node_or_null("Walk")
+		if walk_sound and walk_sound is AudioStreamPlayer2D:
+			walk_sound.stop()
 		update_animation()
 
 
 func distance_to_player() -> float:
-	return global_position.distance_to(player.global_position)
+	var current_player = get_player()
+	if not is_instance_valid(current_player):
+		return INF
+	return global_position.distance_to(current_player.global_position)
 
 
 func move() -> void:
+	var current_player = get_player()
+	if not is_instance_valid(current_player):
+		return
+	
 	if state == State.CHASE:
-		nav_agent.target_position = player.global_position
+		nav_agent.target_position = current_player.global_position
 	elif state == State.RETURN:
 		nav_agent.target_position = spawn_point
 	
@@ -85,6 +151,10 @@ func move() -> void:
 			$Sprite2D.flip_h = true
 		elif velocity.x > 0.01:
 			$Sprite2D.flip_h = false
+	
+	var walk_sound = get_node_or_null("Walk")
+	if walk_sound and walk_sound is AudioStreamPlayer2D and not walk_sound.playing:
+		walk_sound.play()
 	
 	update_animation()
 
@@ -106,14 +176,34 @@ func update_animation() -> void:
 
 
 func attack() -> void:
-	var player_pos: Vector2 = player.global_position
+	var current_player = get_player()
+	if not is_instance_valid(current_player):
+		state = State.IDLE
+		return
+	
+	var player_pos: Vector2 = current_player.global_position
 	var attack_dir: Vector2 = (player_pos - global_position).normalized()
 	$Sprite2D.flip_h = attack_dir.x < 0 and abs(attack_dir.x) >= abs(attack_dir.y)
 	animation_tree.set("parameters/attack/BlendSpace2D/blend_position", attack_dir)
 	update_animation()
+	
+	var attack_sound = get_node_or_null("AttackSound")
+	if attack_sound and attack_sound is AudioStreamPlayer2D and not attack_sound.playing:
+		attack_sound.play()
 
 	await get_tree().create_timer(attack_speed).timeout
 	state = State.IDLE
+
+
+func play_random_idle_sound() -> void:
+	if idle_sounds.is_empty():
+		return
+	
+	var random_sound = idle_sounds.pick_random()
+	if random_sound and not random_sound.playing:
+		random_sound.play()
+	
+	sound_interval = randf_range(3.0, 15.0)
 
 
 func take_damage(damage_taken: int) -> void:
@@ -125,8 +215,9 @@ func take_damage(damage_taken: int) -> void:
 func death() -> void:
 	state = State.DEAD
 	
-	if player and player.has_method("on_enemy_killed"):
-		player.on_enemy_killed()
+	var current_player = get_player()
+	if is_instance_valid(current_player) and current_player.has_method("on_enemy_killed"):
+		current_player.on_enemy_killed()
 	
 	if death_packed:
 		var death_scene: Node2D = death_packed.instantiate()

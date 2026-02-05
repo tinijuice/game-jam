@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bkykqkec8vb31" path="res://scenes/ui/inventory_slot.tscn" id="1_65we4"]
 [ext_resource type="Script" uid="uid://dst2031fip8mt" path="res://scenes/ui/inventory_bar.gd" id="1_aw4w6"]
-[ext_resource type="PackedScene" uid="uid://cnqwt8ugyg8ux" path="res://scenes/entities/loots/steak.tscn" id="2_y51fv"]
+[ext_resource type="PackedScene" uid="uid://cnqwt8ugyg8ux" path="res://scenes/entities/loots/item_pickup.tscn" id="2_y51fv"]
 
 [node name="InventoryBar" type="CanvasLayer" unique_id=948304086]
 script = ExtResource("1_aw4w6")

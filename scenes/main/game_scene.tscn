@@ -1,7 +1,13 @@
 [gd_scene format=3 uid="uid://df0a2ge6gdt86"]
 
+[ext_resource type="Script" uid="uid://csdld1voghqct" path="res://scenes/main/game_scene.gd" id="1_rfwcf"]
 [ext_resource type="PackedScene" uid="uid://cn73samwecg02" path="res://scenes/maps/test_map.tscn" id="1_sdya7"]
+[ext_resource type="PackedScene" uid="uid://q1cojgue0i41" path="res://scenes/ui/end_game_screen.tscn" id="2_5odut"]
 
 [node name="GameScene" type="Node2D" unique_id=403742676]
+script = ExtResource("1_rfwcf")
+end_game_screen_packed = ExtResource("2_5odut")
 
 [node name="TestMap" parent="." unique_id=1396290268 instance=ExtResource("1_sdya7")]
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=417451169]

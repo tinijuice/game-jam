@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://q1cojgue0i41"]
 
 [ext_resource type="FontFile" uid="uid://d00h4ctsh5ohj" path="res://assets/fonts/PirataOne-Regular.ttf" id="1_ketox"]
+[ext_resource type="Script" uid="uid://cgcwip7mbpetr" path="res://scenes/ui/end_game_screen.gd" id="1_svl4o"]
 [ext_resource type="Texture2D" uid="uid://cay7sb1kgl62g" path="res://assets/ui/buttons/Button_Blue_3Slides.png" id="2_svl4o"]
 [ext_resource type="Texture2D" uid="uid://bbjv34tylqkfm" path="res://assets/ui/buttons/Button_Blue_3Slides_Pressed.png" id="3_x8rbx"]
 [ext_resource type="Texture2D" uid="uid://btnuxbytj54v7" path="res://assets/ui/buttons/Button_Hover_3Slides.png" id="4_grgci"]
@@ -12,6 +13,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_svl4o")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1835195829]
 layout_mode = 1
@@ -101,3 +103,6 @@ theme_override_font_sizes/font_size = 56
 text = "Menu principal"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[connection signal="pressed" from="VB/Buttons/Replay" to="." method="_on_replay_pressed"]
+[connection signal="pressed" from="VB/Buttons/MainMenu" to="." method="_on_main_menu_pressed"]

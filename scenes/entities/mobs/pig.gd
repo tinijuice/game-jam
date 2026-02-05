@@ -24,13 +24,38 @@ var spawn_point: Vector2
 @onready var nav_agent: NavigationAgent2D = $NavigationAgent2D
 
 
+var idle_sounds: Array[AudioStreamPlayer2D] = []
+
+var sound_timer: float = 0.0
+var sound_interval: float = 10.0
+
 func _ready() -> void:
 	animation_tree.set_active(true)
 	
 	nav_agent.path_desired_distance = 4.0
 	nav_agent.target_desired_distance = 10.0
 	
+	load_idle_sounds()
+	
+	sound_interval = randf_range(3.0, 15.0)
+	sound_timer = randf_range(0.0, sound_interval)
+	
 	call_deferred("actor_setup")
+
+
+func load_idle_sounds() -> void:
+	var sound_mob = get_node_or_null("SoundMob")
+	
+	if not sound_mob:
+		push_warning("Aucun node 'SoundMob' trouvé pour %s" % name)
+		return
+	
+	for child in sound_mob.get_children():
+		if child is AudioStreamPlayer2D:
+			idle_sounds.append(child)
+	
+	if idle_sounds.is_empty():
+		push_warning("Aucun AudioStreamPlayer2D trouvé dans SoundMob de %s" % name)
 
 
 func actor_setup() -> void:
@@ -40,7 +65,13 @@ func actor_setup() -> void:
 		spawn_point = global_position
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	if state != State.DEAD:
+		sound_timer += delta
+		if sound_timer >= sound_interval:
+			play_random_idle_sound()
+			sound_timer = 0.0
+	
 	if state == State.DEAD:
 		return
 	
@@ -53,6 +84,17 @@ func _physics_process(_delta: float) -> void:
 			state = State.IDLE
 			velocity = Vector2.ZERO
 			update_animation()
+
+
+func play_random_idle_sound() -> void:
+	if idle_sounds.is_empty():
+		return
+	
+	var random_sound = idle_sounds.pick_random()
+	if random_sound and not random_sound.playing:
+		random_sound.play()
+	
+	sound_interval = randf_range(3.0, 10.0)
 
 
 func distance_to_player() -> float:

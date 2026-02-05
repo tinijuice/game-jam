@@ -87,6 +87,10 @@ func use_item(item_name: String) -> void:
 		"Steak":
 			var player = get_tree().get_first_node_in_group("player")
 			if player:
+				# ⭐ Joue le son sur le joueur
+				if player.has_node("EatSound"):
+					player.get_node("EatSound").play()
+				
 				player.hitpoints += 20
 				player.hitpoints = clamp(player.hitpoints, 0, player.hitpoints_max)
 				var hud = get_tree().get_root().get_node_or_null("HUD")
@@ -97,7 +101,7 @@ func use_item(item_name: String) -> void:
 		"Vincent":
 			var player = get_tree().get_first_node_in_group("player")
 			if player:
-				player.hitpoints = 0  # ← Directement à 0 pour mourir
+				player.hitpoints = 0
 				var hud = get_tree().get_root().get_node_or_null("HUD")
 				if hud:
 					hud.update_health(player.hitpoints)

@@ -3,6 +3,10 @@
 [ext_resource type="Script" uid="uid://5gkn3qh1j4mm" path="res://scenes/entities/player/player.gd" id="1_635qg"]
 [ext_resource type="PackedScene" uid="uid://xv5pm87t6hru" path="res://scenes/effects/death.tscn" id="2_58kc7"]
 [ext_resource type="Texture2D" uid="uid://8bh43wfdmtwi" path="res://assets/sprites/player/player_main.png" id="3_58kc7"]
+[ext_resource type="AudioStream" uid="uid://ddp7tartrn4xr" path="res://assets/audio/Player/walk.mp3" id="4_nh4ur"]
+[ext_resource type="AudioStream" uid="uid://dlbibtlv2h7dh" path="res://assets/audio/Player/eat.mp3" id="5_bjvvg"]
+[ext_resource type="AudioStream" uid="uid://d04ood3aroky2" path="res://assets/audio/Player/attack/attack1.mp3" id="6_8akj5"]
+[ext_resource type="AudioStream" uid="uid://btcqo6r687ufi" path="res://assets/audio/Player/attack/attack3.mp3" id="8_5sj0x"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_58kc7"]
 radius = 15.0
@@ -474,12 +478,26 @@ position = Vector2(-2.3841858e-07, 2.0861626e-06)
 shape = SubResource("RectangleShape2D_635qg")
 debug_color = Color(0.7827452, 0.32132593, 0.74664986, 0.41960785)
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=703368687]
+[node name="MusicAmbiance" type="AudioStreamPlayer2D" parent="." unique_id=703368687]
 position = Vector2(-5, -8)
 stream = SubResource("AudioStreamMP3_58kc7")
-volume_db = 5.0
+volume_db = -10.0
 autoplay = true
 max_distance = 4096.0
 parameters/looping = true
+
+[node name="FootstepsSound" type="AudioStreamPlayer2D" parent="." unique_id=532170306]
+stream = ExtResource("4_nh4ur")
+
+[node name="EatSound" type="AudioStreamPlayer2D" parent="." unique_id=1993300778]
+stream = ExtResource("5_bjvvg")
+
+[node name="AttackSound" type="Node2D" parent="." unique_id=857095077]
+
+[node name="Attack1" type="AudioStreamPlayer2D" parent="AttackSound" unique_id=1029308749]
+stream = ExtResource("6_8akj5")
+
+[node name="Attack3" type="AudioStreamPlayer2D" parent="AttackSound" unique_id=1872519248]
+stream = ExtResource("8_5sj0x")
 
 [connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]

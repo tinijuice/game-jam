@@ -1,9 +1,13 @@
 [gd_scene format=3 uid="uid://dwjf8dpp2hp1b"]
 
-[ext_resource type="Script" uid="uid://condrk1adbclc" path="res://scenes/entities/mobs/mob.gd" id="1_mlss4"]
+[ext_resource type="Script" uid="uid://cg050adv0xy5k" path="res://scenes/entities/mobs/mob.gd" id="1_mlss4"]
 [ext_resource type="PackedScene" uid="uid://xv5pm87t6hru" path="res://scenes/effects/death.tscn" id="2_c8ylr"]
 [ext_resource type="Texture2D" uid="uid://dqm2u1vkgs84" path="res://assets/sprites/mobs/Pig.png" id="3_gxqch"]
 [ext_resource type="PackedScene" uid="uid://cnqwt8ugyg8ux" path="res://scenes/entities/loots/item_pickup.tscn" id="3_r18b4"]
+[ext_resource type="AudioStream" uid="uid://bn7jrc5dt6hgn" path="res://assets/audio/pig/roar1.mp3" id="5_3alym"]
+[ext_resource type="AudioStream" uid="uid://b7wkn31u23rer" path="res://assets/audio/pig/roar2.mp3" id="6_urm05"]
+[ext_resource type="AudioStream" uid="uid://vhknfj7b5a4b" path="res://assets/audio/Goblin/attack.mp3" id="7_fbqry"]
+[ext_resource type="AudioStream" uid="uid://ddp7tartrn4xr" path="res://assets/audio/Player/walk.mp3" id="8_3alym"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gxqch"]
 radius = 16.0
@@ -184,8 +188,8 @@ transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition
 graph_offset = Vector2(-5, 157)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_essrt"]
-radius = 27.0
-height = 76.0
+radius = 44.0
+height = 144.0
 
 [node name="Pig" type="CharacterBody2D" unique_id=860125335]
 position = Vector2(13, -19)
@@ -232,9 +236,26 @@ input_pickable = false
 monitoring = false
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="HurtBox" unique_id=1864071914]
-position = Vector2(-10, -9)
+position = Vector2(-10, -24)
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_essrt")
 debug_color = Color(0.93509376, 1.8289686e-05, 0.63991386, 0.41960785)
+
+[node name="SoundMob" type="Node2D" parent="." unique_id=1178693304]
+
+[node name="Roar1" type="AudioStreamPlayer2D" parent="SoundMob" unique_id=2096464747]
+stream = ExtResource("5_3alym")
+max_distance = 1000.0
+
+[node name="Roar2" type="AudioStreamPlayer2D" parent="SoundMob" unique_id=824054793]
+stream = ExtResource("6_urm05")
+max_distance = 1000.0
+
+[node name="AttackSound" type="AudioStreamPlayer2D" parent="." unique_id=648462522]
+stream = ExtResource("7_fbqry")
+
+[node name="Walk" type="AudioStreamPlayer2D" parent="." unique_id=1612696732]
+stream = ExtResource("8_3alym")
+pitch_scale = 1.83
 
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]

@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+signal game_over(victorious: bool)
+
 enum State {
 	IDLE,
 	RUN,
@@ -11,7 +13,7 @@ enum State {
 @export var speed: int = 400
 @export var attack_speed: float = 0.6
 @export var attack_damage: int = 60
-@export var hitpoints: int = 120
+@export var hitpoints: int = 150
 @export var hitpoints_max: int = 150
 @export var temp_gain_on_kill: int = 2
 @export_category("Related Scenes")
@@ -23,6 +25,7 @@ var move_direction: Vector2 = Vector2(0, 0)
 
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var animation_playback: AnimationNodeStateMachinePlayback = $AnimationTree["parameters/playback"]
+@onready var footsteps_sound: AudioStreamPlayer2D = $FootstepsSound
 
 var spawn_point: Marker2D
 
@@ -68,6 +71,11 @@ func movement_loop() -> void:
 	set_velocity(motion)
 	move_and_slide()
 
+	if motion != Vector2.ZERO:
+		if not footsteps_sound.playing:
+			footsteps_sound.play()
+	else:
+		footsteps_sound.stop()
 	
 	if state == State.IDLE or state == State.RUN:
 		if move_direction.x < -0.01:
@@ -82,7 +90,7 @@ func movement_loop() -> void:
 		state = State.IDLE
 		update_animation()
 
-
+		
 func update_animation() -> void:
 	match state:
 		State.IDLE:
@@ -94,23 +102,28 @@ func update_animation() -> void:
 	
 
 func attack() -> void:
-	if state == State.ATTACK:
-		return
 	state = State.ATTACK
-
+	
 	var mouse_pos: Vector2 = get_global_mouse_position()
 	var attack_dir: Vector2 = (mouse_pos - global_position).normalized()
 	$Sprite2D.flip_h = attack_dir.x < 0 and abs(attack_dir.x) >= abs(attack_dir.y)
 	animation_tree.set("parameters/attack/BlendSpace2D/blend_position", attack_dir)
 	update_animation()
+	
+	var attack_sound_node = get_node_or_null("AttackSound")
+	if attack_sound_node:
+		var attack_sounds: Array[AudioStreamPlayer2D] = []
+		for child in attack_sound_node.get_children():
+			if child is AudioStreamPlayer2D:
+				attack_sounds.append(child)
+		
+		if not attack_sounds.is_empty():
+			var random_attack_sound = attack_sounds.pick_random()
+			if not random_attack_sound.playing:
+				random_attack_sound.play()
 
 	await get_tree().create_timer(attack_speed).timeout
-	
-	if move_direction != Vector2.ZERO:
-		state = State.RUN
-	else:
-		state = State.IDLE
-	update_animation()
+	state = State.IDLE
 
 
 func take_damage(damage_taken: int) -> void:
@@ -130,45 +143,22 @@ func death() -> void:
 		return
 
 	state = State.DEAD
+	game_over.emit(false)
+	
 	velocity = Vector2.ZERO
 	move_direction = Vector2.ZERO
 	$HitBox.monitoring = false
 
 	if death_packed != null:
 		var death_scene: Node2D = death_packed.instantiate()
-		
-		# Sauvegarder la position AVANT d'ajouter à la scène
 		var death_position = global_position
-		
 		%Effects.add_child(death_scene)
-		
-		# Définir la position APRÈS l'avoir ajouté
 		death_scene.global_position = death_position
 
 	$Sprite2D.visible = false
 	
 	if has_node("HealthBar"):
 		$HealthBar.visible = false
-
-	await get_tree().create_timer(2.0).timeout
-
-	hitpoints = hitpoints_max
-	global_position = spawn_point.global_position
-	state = State.IDLE
-	
-	$HitBox.monitoring = true
-	$Sprite2D.visible = true
-	
-	if has_node("HealthBar"):
-		$HealthBar.visible = true
-	
-	var hud = get_tree().get_root().get_node_or_null("HUD")
-	if hud:
-		hud.update_health(hitpoints)
-	
-	var temp_bar = get_tree().current_scene.find_child("TemperatureBar", true, false)
-	if temp_bar and temp_bar.has_method("reset_temperature"):
-		temp_bar.reset_temperature()
 
 
 func on_enemy_killed() -> void:

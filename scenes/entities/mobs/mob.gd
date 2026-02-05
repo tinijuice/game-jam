@@ -24,13 +24,38 @@ var spawn_point: Vector2
 @onready var nav_agent: NavigationAgent2D = $NavigationAgent2D
 
 
+var idle_sounds: Array[AudioStreamPlayer2D] = []
+
+var sound_timer: float = 0.0
+var sound_interval: float = 10.0
+
 func _ready() -> void:
 	animation_tree.set_active(true)
 	
 	nav_agent.path_desired_distance = 4.0
 	nav_agent.target_desired_distance = 10.0
 	
+	load_idle_sounds()
+	
+	sound_interval = randf_range(3.0, 15.0)
+	sound_timer = randf_range(0.0, sound_interval)
+	
 	call_deferred("actor_setup")
+
+
+func load_idle_sounds() -> void:
+	var sound_mob = get_node_or_null("SoundMob")
+	
+	if not sound_mob:
+		push_warning("Aucun node 'SoundMob' trouvé pour %s" % name)
+		return
+	
+	for child in sound_mob.get_children():
+		if child is AudioStreamPlayer2D:
+			idle_sounds.append(child)
+	
+	if idle_sounds.is_empty():
+		push_warning("Aucun AudioStreamPlayer2D trouvé dans SoundMob de %s" % name)
 
 
 func actor_setup() -> void:
@@ -40,7 +65,13 @@ func actor_setup() -> void:
 		spawn_point = global_position
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	if state != State.DEAD:
+		sound_timer += delta
+		if sound_timer >= sound_interval:
+			play_random_idle_sound()
+			sound_timer = 0.0
+	
 	if state == State.DEAD:
 		return
 	
@@ -52,7 +83,21 @@ func _physics_process(_delta: float) -> void:
 		if state != State.IDLE:
 			state = State.IDLE
 			velocity = Vector2.ZERO
+			var walk_sound = get_node_or_null("Walk")
+			if walk_sound and walk_sound is AudioStreamPlayer2D:
+				walk_sound.stop()
 			update_animation()
+
+
+func play_random_idle_sound() -> void:
+	if idle_sounds.is_empty():
+		return
+	
+	var random_sound = idle_sounds.pick_random()
+	if random_sound and not random_sound.playing:
+		random_sound.play()
+	
+	sound_interval = randf_range(3.0, 10.0)
 
 
 func distance_to_player() -> float:
@@ -81,6 +126,14 @@ func flee() -> void:
 	elif velocity.x > 0.01:
 		$Sprite2D.flip_h = false
 	
+	var walk_sound = get_node_or_null("Walk")
+	if walk_sound and walk_sound is AudioStreamPlayer2D:
+		if velocity != Vector2.ZERO:
+			if not walk_sound.playing:
+				walk_sound.play()
+		else:
+			walk_sound.stop()
+	
 	update_animation()
 
 
@@ -103,8 +156,6 @@ func take_damage(damage_taken: int) -> void:
 
 func death() -> void:
 	state = State.DEAD
-	
-	print("Cochon mort, position: ", global_position)
 	
 	if player and player.has_method("on_enemy_killed"):
 		player.on_enemy_killed()
@@ -131,7 +182,6 @@ func death() -> void:
 
 func drop_steak() -> void:
 	if not item_pickup_scene:
-		print("ERREUR: item_pickup_scene est null!")
 		return
 	
 	var steak_item = item_pickup_scene.instantiate()
@@ -146,5 +196,3 @@ func drop_steak() -> void:
 	var steak_texture = load("res://assets/sprites/loots/Steak.webp")
 	if steak_texture and steak_item.has_node("item"):
 		steak_item.get_node("item").texture = steak_texture
-	
-	print("Steak créé à: ", steak_item.global_position)
