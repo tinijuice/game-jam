@@ -122,7 +122,6 @@ func take_damage(damage_taken: int) -> void:
 func death() -> void:
 	state = State.DEAD
 	
-	var player = get_tree().get_first_node_in_group("player")
 	if player and player.has_method("on_enemy_killed"):
 		player.on_enemy_killed()
 	

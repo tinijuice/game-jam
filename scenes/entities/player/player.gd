@@ -24,15 +24,29 @@ var move_direction: Vector2 = Vector2(0, 0)
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var animation_playback: AnimationNodeStateMachinePlayback = $AnimationTree["parameters/playback"]
 
-@onready var spawn_point: Marker2D = $SpawnPoint
+var spawn_point: Marker2D
 
 
 func _ready() -> void:
 	$HitBox.monitoring = false
 	animation_tree.set_active(true)
+	
+	spawn_point = get_tree().current_scene.get_node_or_null("PlayerSpawnPoint")
+	
+	if not spawn_point:
+		spawn_point = Marker2D.new()
+		spawn_point.name = "PlayerSpawnPoint"
+		spawn_point.global_position = global_position
+		get_tree().current_scene.add_child(spawn_point)
+		print("⚠️ Aucun spawn point trouvé, créé à : ", global_position)
+	else:
+		print("✅ Spawn point trouvé à : ", spawn_point.global_position)
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if state == State.DEAD:
+		return
+		
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		attack()
 
@@ -43,6 +57,9 @@ func _physics_process(_delta: float) -> void:
 	if $HitBox.monitoring != last_monitoring_state:
 		print("⚡ Monitoring changé: ", $HitBox.monitoring)
 		last_monitoring_state = $HitBox.monitoring
+	
+	if state == State.DEAD:
+		return
 	
 	if not state == State.ATTACK:
 		movement_loop()
@@ -118,12 +135,19 @@ func death() -> void:
 
 	state = State.DEAD
 	velocity = Vector2.ZERO
+	move_direction = Vector2.ZERO
 	$HitBox.monitoring = false
 
 	if death_packed != null:
 		var death_scene: Node2D = death_packed.instantiate()
-		death_scene.position = global_position + Vector2(0, -32)
+		
+		# Sauvegarder la position AVANT d'ajouter à la scène
+		var death_position = global_position
+		
 		%Effects.add_child(death_scene)
+		
+		# Définir la position APRÈS l'avoir ajouté
+		death_scene.global_position = death_position
 
 	$Sprite2D.visible = false
 	

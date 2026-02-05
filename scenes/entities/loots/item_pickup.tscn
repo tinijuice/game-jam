@@ -54,7 +54,7 @@ scale = Vector2(0.132964, 0.132964)
 texture = ExtResource("2_v5ft7")
 
 [node name="item" type="Sprite2D" parent="." unique_id=754795005]
-scale = Vector2(0.03618421, 0.03618421)
+scale = Vector2(0.15, 0.15)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="item" unique_id=1758014329]
 root_node = NodePath("../..")
