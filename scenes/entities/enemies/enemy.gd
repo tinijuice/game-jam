@@ -36,6 +36,10 @@ var sound_interval: float = 0.0
 
 var player: CharacterBody2D = null
 
+var wander_timer: float = 0.0
+var wander_interval: float = 3.0
+var wander_radius: float = 100.0
+var wander_target: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	animation_tree.set_active(true)
@@ -48,6 +52,9 @@ func _ready() -> void:
 	
 	sound_interval = randf_range(3.0, 15.0)
 	sound_timer = randf_range(0.0, sound_interval)
+	
+	wander_interval = randf_range(2.0, 5.0)
+	wander_timer = randf_range(0.0, wander_interval)
 
 
 func load_idle_sounds() -> void:
@@ -77,6 +84,12 @@ func _physics_process(delta: float) -> void:
 		if sound_timer >= sound_interval:
 			play_random_idle_sound()
 			sound_timer = 0.0
+		
+		wander_timer += delta
+		if wander_timer >= wander_interval and state == State.IDLE:
+			set_new_wander_target()
+			wander_timer = 0.0
+			wander_interval = randf_range(2.0, 5.0)
 	
 	var current_player = get_player()
 	
@@ -108,12 +121,23 @@ func _physics_process(delta: float) -> void:
 		state = State.CHASE
 		has_chased = true
 		move()
-	elif global_position.distance_to(spawn_point) > 32 and not has_chased:
+	elif global_position.distance_to(spawn_point) > 32 and has_chased:
 		state = State.RETURN
 		move()
+	elif state == State.IDLE and wander_target != Vector2.ZERO:
+		if global_position.distance_to(wander_target) > 10:
+			move()
+		else:
+			wander_target = Vector2.ZERO
+			velocity = Vector2.ZERO
+			var walk_sound = get_node_or_null("Walk")
+			if walk_sound and walk_sound is AudioStreamPlayer2D:
+				walk_sound.stop()
+			update_animation()
 	elif state != State.IDLE:
 		state = State.IDLE
 		velocity = Vector2.ZERO
+		wander_target = Vector2.ZERO
 		var walk_sound = get_node_or_null("Walk")
 		if walk_sound and walk_sound is AudioStreamPlayer2D:
 			walk_sound.stop()
@@ -127,6 +151,15 @@ func distance_to_player() -> float:
 	return global_position.distance_to(current_player.global_position)
 
 
+
+func set_new_wander_target() -> void:
+	var random_offset = Vector2(
+		randf_range(-wander_radius, wander_radius),
+		randf_range(-wander_radius, wander_radius)
+	)
+	wander_target = spawn_point + random_offset
+
+
 func move() -> void:
 	var current_player = get_player()
 	if not is_instance_valid(current_player):
@@ -136,6 +169,8 @@ func move() -> void:
 		nav_agent.target_position = current_player.global_position
 	elif state == State.RETURN:
 		nav_agent.target_position = spawn_point
+	elif state == State.IDLE and wander_target != Vector2.ZERO:
+		nav_agent.target_position = wander_target
 	
 	var next_path_position: Vector2 = nav_agent.get_next_path_position()
 	velocity = global_position.direction_to(next_path_position) * speed
@@ -153,8 +188,12 @@ func move() -> void:
 			$Sprite2D.flip_h = false
 	
 	var walk_sound = get_node_or_null("Walk")
-	if walk_sound and walk_sound is AudioStreamPlayer2D and not walk_sound.playing:
-		walk_sound.play()
+	if walk_sound and walk_sound is AudioStreamPlayer2D:
+		if velocity != Vector2.ZERO:
+			if not walk_sound.playing:
+				walk_sound.play()
+		else:
+			walk_sound.stop()
 	
 	update_animation()
 
@@ -233,7 +272,7 @@ func death() -> void:
 		world_effects.add_child(death_scene)
 		death_scene.global_position = death_position
 	
-	EnemyRespawner.schedule_respawn(scene_file_path, 15.0)
+	EnemyRespawner.schedule_respawn(scene_file_path, 45.0, spawn_point)
 	
 	queue_free()
 

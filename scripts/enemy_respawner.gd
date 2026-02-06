@@ -1,51 +1,28 @@
 extends Node
 
-var spawn_zones: Array = []
+var respawn_queue: Array = []
 
-func register_spawn_zones() -> void:
-	spawn_zones.clear()
-	
-	# Récupérer toutes les zones de spawn
-	var zones = get_tree().get_nodes_in_group("spawn_zones")
-	
-	for zone in zones:
-		spawn_zones.append(zone)
-	
-	print("🎯 Zones de spawn enregistrées : ", spawn_zones.size())
+func schedule_respawn(enemy_scene_path: String, delay: float, spawn_position: Vector2) -> void:
+	respawn_queue.append({
+		"scene_path": enemy_scene_path,
+		"position": spawn_position,
+		"time_left": delay
+	})
 
-func get_random_spawn_position() -> Vector2:
-	if spawn_zones.is_empty():
-		print("⚠️ Aucune zone de spawn, position par défaut")
-		return Vector2(500, 500)
-	
-	# Choisir une zone aléatoire
-	var random_zone = spawn_zones.pick_random()
-	
-	# Obtenir un point aléatoire dans cette zone
-	return random_zone.get_random_point_inside()
+func _process(delta: float) -> void:
+	for i in range(respawn_queue.size() - 1, -1, -1):
+		respawn_queue[i].time_left -= delta
+		
+		if respawn_queue[i].time_left <= 0:
+			respawn_enemy(respawn_queue[i].scene_path, respawn_queue[i].position)
+			respawn_queue.remove_at(i)
 
-func schedule_respawn(enemy_scene_path: String, delay: float = 90.0) -> void:
-	print("🔄 Respawn programmé")
-	
-	await get_tree().create_timer(delay).timeout
-	
-	var world = get_tree().current_scene
-	if not is_instance_valid(world):
-		return
-	
-	var enemies_container = world.get_node_or_null("Enemies")
-	if not enemies_container:
-		enemies_container = world
-	
-	var new_enemy = load(enemy_scene_path).instantiate()
-	enemies_container.call_deferred("add_child", new_enemy)
-	
-	await get_tree().process_frame
-	
-	# Obtenir une position dans une zone de spawn
-	var random_pos = get_random_spawn_position()
-	
-	new_enemy.global_position = random_pos
-	new_enemy.spawn_point = random_pos
-	
-	print("✅ Ennemi respawné à : ", random_pos)
+func respawn_enemy(scene_path: String, spawn_position: Vector2) -> void:
+	var enemy_scene = load(scene_path)
+	if enemy_scene:
+		var enemy_instance = enemy_scene.instantiate()
+		enemy_instance.global_position = spawn_position
+		enemy_instance.spawn_point = spawn_position
+		
+		get_tree().current_scene.add_child(enemy_instance)
+		print("✅ Ennemi respawn à:", spawn_position)

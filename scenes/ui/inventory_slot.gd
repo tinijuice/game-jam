@@ -10,7 +10,8 @@ var is_selected: bool = false
 var item_textures: Dictionary = {
 	"Steak": preload("res://assets/sprites/loots/Steak.png"),
 	"Campfire": preload("res://assets/sprites/loots/Campfire.png"),
-	"Vincent": preload("res://assets/sprites/loots/Vincent.jpeg")
+	"Vincent": preload("res://assets/sprites/loots/Vincent.jpeg"),
+	"Spider": preload("res://assets/sprites/loots/Spider.png")
 }
 
 

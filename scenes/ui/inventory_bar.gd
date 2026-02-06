@@ -7,11 +7,31 @@ var selected_slot: int = 0
 @export var campfire_scene: PackedScene
 
 
+var poison_timer: float = 0.0
+var is_poisoned: bool = false
+var poison_duration: float = 8.0
+var poison_damage: int = 5
+
+
 func _ready() -> void:
 	Inventory.inventory_changed.connect(update_ui)
 	update_ui()
 	update_selection()
 
+
+func _process(delta: float) -> void:
+	if is_poisoned:
+		poison_timer += delta
+		if poison_timer >= 1.0:
+			var player = get_tree().get_first_node_in_group("player")
+			if player:
+				player.take_damage(poison_damage)
+			poison_timer = 0.0
+			poison_duration -= 1.0
+			
+			if poison_duration <= 0:
+				is_poisoned = false
+				poison_duration = 10.0
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -58,7 +78,6 @@ func place_selected_item() -> void:
 		place_item(slot_data["name"])
 
 
-
 func place_item(item_name: String) -> void:
 	match item_name:
 		"Campfire":
@@ -81,13 +100,11 @@ func place_item(item_name: String) -> void:
 						campfire.queue_free()
 
 
-
 func use_item(item_name: String) -> void:
 	match item_name:
 		"Steak":
 			var player = get_tree().get_first_node_in_group("player")
 			if player:
-				# ⭐ Joue le son sur le joueur
 				if player.has_node("EatSound"):
 					player.get_node("EatSound").play()
 				
@@ -97,6 +114,12 @@ func use_item(item_name: String) -> void:
 				if hud:
 					hud.update_health(player.hitpoints)
 				Inventory.remove_item("Steak", 1)
+		
+		"Spider":
+			is_poisoned = true
+			poison_timer = 0.0
+			poison_duration = 10.0
+			Inventory.remove_item("Spider", 1)
 
 		"Vincent":
 			var player = get_tree().get_first_node_in_group("player")

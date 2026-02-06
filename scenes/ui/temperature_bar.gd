@@ -2,12 +2,12 @@ extends TextureProgressBar
 
 @export var min_temp := -40
 @export var max_temp := 40
-@export var start_temp := 20
+@export var start_temp := 40
 
 @export var decrease_every := 2
 @export var cold_damage_start := 0
 @export var extreme_cold_temp := -40
-@export var extreme_cold_damage := 2 
+@export var extreme_cold_damage := 2
 @export var extreme_cold_damage_interval := 1.0
 
 @export var player_path: NodePath
@@ -15,7 +15,10 @@ extends TextureProgressBar
 var current_temp: int
 var player: Node = null
 var is_near_fire: bool = false
-var extreme_cold_timer: float = 0.0  # Timer pour les dégâts extrêmes
+var extreme_cold_timer: float = 0.0
+
+var frost_effect: CanvasLayer
+
 
 func _ready():
 	min_value = min_temp
@@ -27,11 +30,20 @@ func _ready():
 	if player_path != null:
 		player = get_node(player_path)
 
+	# ⭐ Essayez de le trouver autrement
+	frost_effect = get_node_or_null("/root/TestMap/FrostEffect") 
+	# OU
+	frost_effect = get_tree().root.find_child("FrostEffect", true, false)
+	
+	print("FrostEffect trouvé:", frost_effect)
+	
+	if frost_effect and frost_effect.has_method("update_frost_effect"):
+		frost_effect.update_frost_effect(current_temp)
+
 	start_cooling()
 
 
 func _process(delta: float) -> void:
-	# Infliger des dégâts continus à -40°
 	if current_temp <= extreme_cold_temp and player:
 		extreme_cold_timer += delta
 		if extreme_cold_timer >= extreme_cold_damage_interval:
@@ -54,7 +66,12 @@ func change_temperature(amount: int) -> void:
 	current_temp = clamp(current_temp + amount, min_temp, max_temp)
 	value = current_temp
 
-	# Dégâts progressifs entre cold_damage_start et extreme_cold_temp
+	print("Changement température:", current_temp)  # ⭐ Ajoutez ce print
+
+	if frost_effect and frost_effect.has_method("update_frost_effect"):
+		frost_effect.update_frost_effect(current_temp)
+		print("update_frost_effect appelé avec:", current_temp)  # ⭐ Et celui-ci
+
 	if current_temp <= cold_damage_start and current_temp > extreme_cold_temp:
 		var damage = abs(current_temp - old_temp)
 		if damage > 0:
@@ -65,3 +82,6 @@ func reset_temperature() -> void:
 	current_temp = start_temp
 	value = current_temp
 	extreme_cold_timer = 0.0
+	
+	if frost_effect and frost_effect.has_method("update_frost_effect"):
+		frost_effect.update_frost_effect(current_temp)

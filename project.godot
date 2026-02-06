@@ -14,7 +14,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="GDC_RPG_Essentials_Starter-Kit"
+config/name="Sueur Froide"
 run/main_scene="uid://b1xyp3sr8x2c5"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
@@ -29,6 +29,8 @@ EnemyRespawner="*uid://d33inwu30naf"
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/mode=3
+window/size/initial_position_type=0
+window/stretch/mode="canvas_items"
 
 [global_group]
 

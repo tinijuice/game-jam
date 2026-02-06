@@ -8,15 +8,10 @@ func _ready() -> void:
 
 
 func load_main_menu(origin: String) -> void:
+	print("🏠 Chargement du menu, origine:", origin)
 	
-	var game_scene = get_node_or_null("GameScene")
-	if game_scene:
-		game_scene.queue_free()
+	cleanup_all_scenes()
 	
-	var existing_menu = get_node_or_null("MainMenu")
-	if existing_menu:
-		existing_menu.queue_free()
-
 	await get_tree().process_frame
 
 	var main_menu: Control = main_menu_packed.instantiate()
@@ -29,21 +24,30 @@ func load_main_menu(origin: String) -> void:
 
 
 func new_game(origin: String) -> void:
+	print("🎮 Nouvelle partie, origine:", origin)
 	
-	var main_menu = get_node_or_null("MainMenu")
-	if main_menu:
-		main_menu.queue_free()
-	
-	var old_game_scene = get_node_or_null("GameScene")
-	if old_game_scene:
-		old_game_scene.queue_free()
+	cleanup_all_scenes()
 	
 	await get_tree().process_frame
-	
 	await get_tree().process_frame
 	
 	var game_scene: Node2D = game_scene_packed.instantiate()
 	add_child(game_scene)
+	print("✅ GameScene créée")
+
+
+func cleanup_all_scenes() -> void:
+	var main_menu = get_node_or_null("MainMenu")
+	if main_menu:
+		main_menu.queue_free()
+	
+	var game_scene = get_node_or_null("GameScene")
+	if game_scene:
+		game_scene.queue_free()
+	
+	for child in get_children():
+		if child is CanvasLayer:
+			child.queue_free()
 
 
 func settings_open(_origin: String) -> void:

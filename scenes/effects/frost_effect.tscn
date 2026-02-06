@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://cr8i1p754mh6v"]
+
+[ext_resource type="Script" uid="uid://rbsc0nx30s4l" path="res://scenes/effects/frost_effect.gd" id="1_xhdn6"]
+[ext_resource type="VideoStream" uid="uid://t0uwlbh0xj1d" path="res://assets/effects/frozen.ogv" id="2_4a51p"]
+
+[node name="FrostEffect" type="CanvasLayer" unique_id=550595722]
+layer = 100
+script = ExtResource("1_xhdn6")
+
+[node name="FrostVideo" type="VideoStreamPlayer" parent="." unique_id=719746117]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stream = ExtResource("2_4a51p")
+expand = true
+
+[node name="FrostOverlay" type="ColorRect" parent="." unique_id=1942780786]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.83137256, 1, 1, 1)
+
+[node name="FrostTexture" type="TextureRect" parent="." unique_id=1770710914]
+offset_right = 40.0
+offset_bottom = 40.0

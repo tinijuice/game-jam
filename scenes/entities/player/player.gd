@@ -31,6 +31,9 @@ var spawn_point: Marker2D
 
 
 func _ready() -> void:
+	var cam = get_node_or_null("Camera2D")
+	if cam:
+		cam.make_current()
 	$HitBox.monitoring = false
 	animation_tree.set_active(true)
 	
@@ -129,6 +132,10 @@ func attack() -> void:
 func take_damage(damage_taken: int) -> void:
 	hitpoints -= damage_taken
 	hitpoints = clamp(hitpoints, 0, hitpoints_max)
+	
+	var damage_sound = get_node_or_null("DamageSound")
+	if damage_sound and damage_sound is AudioStreamPlayer2D and not damage_sound.playing:
+		damage_sound.play()
 	
 	if hitpoints <= 0 and state != State.DEAD:
 		death()
